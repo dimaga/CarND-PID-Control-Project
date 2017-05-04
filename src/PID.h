@@ -1,8 +1,8 @@
-#ifndef PID_H
-#define PID_H
+#ifndef SRC_PID_H_
+#define SRC_PID_H_
 
 class PID {
-public:
+ public:
   /*
   * Errors
   */
@@ -43,4 +43,4 @@ public:
   double TotalError();
 };
 
-#endif /* PID_H */
+#endif  // SRC_PID_H_
