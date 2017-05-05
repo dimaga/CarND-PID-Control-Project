@@ -6,26 +6,16 @@ class PID {
   /*
   * Errors
   */
-  double p_error;
-  double i_error;
-  double d_error;
+  double p_error_{0};
+  double i_error_{0};
+  double d_error_{0};
 
   /*
   * Coefficients
   */ 
-  double Kp;
-  double Ki;
-  double Kd;
-
-  /*
-  * Constructor
-  */
-  PID();
-
-  /*
-  * Destructor.
-  */
-  virtual ~PID();
+  double Kp_{0};
+  double Ki_{0};
+  double Kd_{0};
 
   /*
   * Initialize PID.
@@ -34,8 +24,11 @@ class PID {
 
   /*
   * Update the PID error variables given cross track error.
+  *
+  * If apply_integral is false, integral error is not accumulated.
+  * This is a measure to prevent integral wind up
   */
-  void UpdateError(double cte);
+  void UpdateError(double cte, bool apply_integral);
 
   /*
   * Calculate the total PID error.

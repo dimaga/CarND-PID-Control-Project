@@ -31,10 +31,22 @@ std::string hasData(std::string s) {
 int main() {
   uWS::Hub h;
 
-  PID pid;
-  pid.Init(0.0, 0.0, 0.0);
+  PID pid_steering;
 
-  h.onMessage([&pid](
+  // Ziegler–Nichols method from
+  // https://en.wikipedia.org/wiki/PID_controller#Manual_tuning
+  // and https://en.wikipedia.org/wiki/Ziegler–Nichols_method
+  const double kTu = 200.0;
+  const double kKu = 0.2;
+  pid_steering.Init(0.6 * kKu, 1.2 * kKu / kTu, 3.0 * kKu * kTu / 40.0);
+
+  PID pid_throttle;
+  // Values are borrowed from drive.py of Behavioral Cloning project
+  pid_throttle.Init(0.1, 0.002, 0.0);
+
+  int msg_index = 0;
+
+  h.onMessage([&pid_steering, &pid_throttle, &msg_index](
       uWS::WebSocket<uWS::SERVER> ws,
       char *data,
       size_t length,
@@ -52,13 +64,13 @@ int main() {
           double cte = std::stod(j[1]["cte"].get<std::string>());
           double speed = std::stod(j[1]["speed"].get<std::string>());
           double angle = std::stod(j[1]["steering_angle"].get<std::string>());
-          double steer_value;
-          /*
-          * TODO: Calcuate steering value here, remember the steering value is
-          * [-1, 1].
-          * NOTE: Feel free to play around with the throttle and speed. Maybe use
-          * another PID controller to control the speed!
-          */
+
+          pid_steering.UpdateError(cte, std::abs(speed) > 10.0);
+          double steer_value = pid_steering.TotalError();
+
+          const double desired_speed = 40;
+          double speed_error = speed - desired_speed;
+          pid_throttle.UpdateError(speed_error, std::abs(speed) > 30.0);
 
           // DEBUG
           std::cout << "CTE: " << cte << " Steering Value: ";
@@ -66,9 +78,12 @@ int main() {
 
           json msgJson;
           msgJson["steering_angle"] = steer_value;
-          msgJson["throttle"] = 0.3;
+          msgJson["throttle"] = pid_throttle.TotalError();
           auto msg = "42[\"steer\"," + msgJson.dump() + "]";
-          std::cout << msg << std::endl;
+
+          std::cout << msg_index << ": " << msg << std::endl;
+          msg_index++;
+
           ws.send(msg.data(), msg.length(), uWS::OpCode::TEXT);
         }
       } else {
