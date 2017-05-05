@@ -42,7 +42,7 @@ Small positive values of Kd_ helps to bring in stability into the system and dam
 
 ### Calibration method
 
-Manual naive calibration of the PID controller is hard, despite of only three hyper-parameters. I tried https://en.wikipedia.org/wiki/PID_controller#Manual_tuning but it took a lot of time and did not bring any stable result. Therefore, I ended up with the following methods:
+Manual naive calibration of the PID controller is hard, in spite of only three hyper-parameters. I tried https://en.wikipedia.org/wiki/PID_controller#Manual_tuning but it took a lot of time and did not bring any stable result. Therefore, I ended up with the following methods:
 
 For throttle PID, I borrowed hyperparameter values from Term 1, "Behavioral Cloning" project.
 
