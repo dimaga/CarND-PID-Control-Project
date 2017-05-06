@@ -32,7 +32,7 @@ Kp_ and Ki_ control convergence time and overshooting. Larger values result in o
 * Steering controller forces the car to rotate left and right around the middle of the road
 * Throttle controller forces the car to constantly accelerate and decelerate in a loop
 
-Ki_ > 0 allows eliminate constant bias error. However, a bigger value of Ki_ or long convergence time may result in loss of stability.
+Ki_ > 0 allows to eliminate constant bias error. However, a bigger value of Ki_ or long convergence time may result in loss of stability.
 
 For example, in case of the steering wheel controller, if the car does not move for certain amount of time and is slightly off the road, the integral term collects a big error, which results in divergence from the road after the car starts its motion.
 
